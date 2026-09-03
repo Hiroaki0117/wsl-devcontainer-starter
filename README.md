@@ -32,3 +32,21 @@ WSL の Ubuntu に入れた Docker Engine の上で、VS Code の Dev Containers
 | `index.html` `src/` | Vite + React の最小アプリ |
 | `vite.config.js` | `server.host: true`。コンテナーの中では既定の localhost が IPv6 (::1) だけを聞き、VS Code の転送 (127.0.0.1) が届かないため |
 | `.devcontainer/devcontainer-lock.json` | Dev Containers が自動で作る。足した機能 (Claude Code) の版を固定する |
+
+## VS Code を使わずに立てる (docker compose)
+
+同じ環境を、VS Code なしで `docker compose` だけで立てる版です。`compose.yaml` と `Dockerfile` が devcontainer.json と同じ中身を Docker の語で書いています。Ubuntu 側で `gh auth login` を済ませておくと、コンテナーの中からの `git push` が通ります (ログインファイルを読み取り専用で貸す作り)。
+
+```bash
+docker compose up -d --build       # イメージを作り、app (Node + Claude Code) と db (PostgreSQL 18) を起動
+docker compose exec app bash       # コンテナーの中に入る (VS Code のターミナルの代わり)
+npm ci && npm run dev              # 中で。Windows のブラウザで http://localhost:5173
+docker compose down                # 止める。ボリューム (Claude Code のログインと DB の中身) は残る
+```
+
+| ファイル | 役割 |
+|---|---|
+| `Dockerfile` | イメージの作り方。Node 24 のイメージを土台に gh と Claude Code を足す (devcontainer.json の image と features) |
+| `compose.yaml` | コンテナーの動かし方。ボリューム・ポート 5173・GitHub のログインの貸し出し・PostgreSQL |
+
+`docker compose down -v` は compose.yaml に書いたボリュームを全部消します (Claude Code のログインも)。DB だけ消すなら `docker volume rm wsl-devcontainer-starter_pgdata` を使ってください。
