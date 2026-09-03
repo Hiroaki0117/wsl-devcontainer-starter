@@ -1,0 +1,29 @@
+# 3 本目で VS Code が裏でやっていたことを docker compose の語で書いたもの。
+# 使い方: docker compose up -d --build / docker compose exec app bash / docker compose down
+services:
+  app:
+    build: .                                     # 同じフォルダーの Dockerfile からイメージを作る
+    working_dir: /workspaces/wsl-devcontainer-starter
+    volumes:
+      - .:/workspaces/wsl-devcontainer-starter   # リポジトリのフォルダーをそのまま中に見せる
+      - claude-code-config:/home/node/.claude    # Claude Code のログインの保存先 (devcontainer.json の mounts)
+      - ~/.config/gh:/home/node/.config/gh:ro    # Ubuntu 側の GitHub のログインを読み取り専用で貸す
+    ports:
+      - "5173:5173"                              # devcontainer.json の forwardPorts
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@db:5432/postgres
+    command: sleep infinity                      # 何もせず待つ。作業は docker compose exec で入る
+    depends_on:
+      - db
+
+  db:
+    image: postgres:18
+    environment:
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - pgdata:/var/lib/postgresql               # データベースの中身の保存先
+
+volumes:
+  claude-code-config:
+    name: claude-code-config                     # 3 本目で VS Code が作ったボリュームと同じ名前
+  pgdata:
