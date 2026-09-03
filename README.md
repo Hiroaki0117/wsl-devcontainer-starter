@@ -29,4 +29,6 @@ WSL の Ubuntu に入れた Docker Engine の上で、VS Code の Dev Containers
 |---|---|
 | `.devcontainer/devcontainer.json` | 環境の定義。Node 24 のイメージに Claude Code を足し、ポート 5173 を Windows へ転送し、Claude Code のログインをボリュームに残す |
 | `.claude/settings.json` | Claude Code のモデルと effort (opus / high) |
-| `index.html` `src/` `vite.config.js` | Vite + React の最小アプリ |
+| `index.html` `src/` | Vite + React の最小アプリ |
+| `vite.config.js` | `server.host: true`。コンテナーの中では既定の localhost が IPv6 (::1) だけを聞き、VS Code の転送 (127.0.0.1) が届かないため |
+| `.devcontainer/devcontainer-lock.json` | Dev Containers が自動で作る。足した機能 (Claude Code) の版を固定する |
