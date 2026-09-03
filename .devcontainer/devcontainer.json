@@ -1,0 +1,16 @@
+{
+  "name": "wsl-devcontainer-starter",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:24",
+  "features": {
+    "ghcr.io/anthropics/devcontainer-features/claude-code:1.0": {}
+  },
+  "forwardPorts": [5173],
+  "mounts": [
+    "source=claude-code-config,target=/home/node/.claude,type=volume"
+  ],
+  "containerEnv": {
+    "CLAUDE_CONFIG_DIR": "/home/node/.claude"
+  },
+  "remoteUser": "node",
+  "postCreateCommand": "sudo chown -R node:node /home/node/.claude && npm install"
+}

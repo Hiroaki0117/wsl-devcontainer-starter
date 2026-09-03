@@ -1,0 +1,32 @@
+# wsl-devcontainer-starter
+
+WSL の Ubuntu に入れた Docker Engine の上で、VS Code の Dev Containers を使って「誰が開いても同じ開発環境」を作る最小の雛形です。中には Node 24・Claude Code・Vite + React の最小アプリが入ります。Claude Code は Opus 5・effort high で動くよう設定してあります。
+
+## 必要なもの
+
+- Windows 11 と WSL 2 の Ubuntu (`wsl --install` 済み)
+- Ubuntu 側の Docker Engine (`docker run hello-world` が sudo 無しで通ること)
+- Windows 側の VS Code と、拡張機能の WSL と Dev Containers
+
+## 使い方 (3 手)
+
+1. Ubuntu のターミナルで clone して VS Code で開く
+
+   ```bash
+   git clone https://github.com/Hiroaki0117/wsl-devcontainer-starter.git
+   cd wsl-devcontainer-starter
+   code .
+   ```
+
+2. VS Code の右下に出る **Reopen in Container** を押す (コマンドパレットの Dev Containers: Reopen in Container でも同じ)。初回はイメージの取得で数分かかる
+3. VS Code のターミナル (Ctrl+`) で `claude` と打ち、ブラウザでログインする
+
+アプリは `npm run dev` で起動し、Windows のブラウザで http://localhost:5173 を開きます。
+
+## 中身
+
+| ファイル | 役割 |
+|---|---|
+| `.devcontainer/devcontainer.json` | 環境の定義。Node 24 のイメージに Claude Code を足し、ポート 5173 を Windows へ転送し、Claude Code のログインをボリュームに残す |
+| `.claude/settings.json` | Claude Code のモデルと effort (opus / high) |
+| `index.html` `src/` `vite.config.js` | Vite + React の最小アプリ |
